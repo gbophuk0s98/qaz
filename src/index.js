@@ -101,6 +101,7 @@ export class App extends Component {
                 <div className="mw-500">
                     <AppHeader />
                     <div className="top-panel d-flex">
+                        dasdsa
                         <SearchPanel 
                             onSearchChange={this.onSearchChange}
                         />
