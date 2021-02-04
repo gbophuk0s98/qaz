@@ -4,38 +4,25 @@ import './todo-list-item.css'
 
 export class TodoListItem extends Component{
 
-    constructor(){
-        super()
-        this.state = {
-            done: false,
-            important: false,
-        }
-    }
-
     onLabelClick = () => {
-        this.setState((state) => {
-            return { done: !state.done }
-        })
+        this.props.onToggleDone()
     }
 
     onExclamationClick = () => {
-        this.setState((state) => {
-            return { important: !state.important }
-        })
+        this.props.onToggleImportant()
     }
+
 
     render(){
         
-        const { label, onDeleted } = this.props
-        const { done, important } = this.state
+        const { label, onDeleted, done, important } = this.props
 
-        let classNames = 'todo-list-item'
-
-        if (done) classNames += ' done'
-        if (important) classNames += ' important'
+        let classes = 'todo-list-item'
+        if (done) classes += ' done'
+        if (important) classes += ' important'
 
         return (
-            <span className={classNames}>
+            <span className={classes}>
 
                 <span
                     className="todo-list-item-label"

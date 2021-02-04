@@ -9,10 +9,41 @@ export class App extends Component {
 
     state = {
         todoData: [
-            {label: 'Drink Cofee', important: false, id: 1},
-            {label: 'Make Awesome App', important: true, id: 2},
-            {label: 'Have a lunch', important: false, id: 3},
-        ]
+            {label: 'Drink Coffee', id: 1, important: false, done: false},
+            {label: 'Make Awesome App', id: 2, important: false, done: false},
+            {label: 'Have a lunch', id: 3, important: false, done: false},
+        ],
+        term: '',
+        filter: 'all',
+    }
+
+    onToggleDone = (id) => {
+
+        const todoDataUpdated = this.state.todoData.filter((item) => {
+            if (item.id === id) {
+                item.done = !item.done
+                return item
+            }
+            return item
+        })
+        this.setState({
+            todoData: todoDataUpdated
+        })
+    }
+
+    onToggleImportant = (id) => {
+
+        const todoDataUpdated = this.state.todoData.filter((item) => {
+            if (item.id === id) {
+                item.important = !item.important
+                return item
+            }
+            return item
+        })
+        console.log(todoDataUpdated)
+        this.setState({
+            todoData: todoDataUpdated
+        })
     }
 
     deleteItem = (id) => {
@@ -25,19 +56,54 @@ export class App extends Component {
             }
         })
     }
-    
+
+    search(items, term){
+        if (term.length === 0){
+            return items
+        }
+        return items.filter((item) => {
+            return item.label.toLowerCase().indexOf(term.toLowerCase()) > -1
+        })
+    }
+
+    onSearchChange = (term) => {
+        this.setState({ term })
+    }
+
+    onFilterChange = (filter) => {
+        this.setState({ filter })
+    }
+
+    filter(items, filter){
+        switch (filter) {
+            case 'all': return items
+            case 'active': return items.filter(item => !item.done)
+            case 'done': return items.filter(item => item.done)
+            default: return items
+        }
+    }
+
     render(){
+
+        const { todoData, term, filter } = this.state
+        const visibleItems = this.filter(this.search(todoData, term), filter)
+
         return(
             <div className="container m-auto">
                 <div className="mw-500">
                     <AppHeader />
                     <div className="top-panel d-flex">
-                        <SearchPanel />
-                        <ItemStatusFilter />
+                        <SearchPanel onSearchChange={this.onSearchChange}/>
+                        <ItemStatusFilter 
+                            filter={filter}
+                            onFilterChange={this.onFilterChange}
+                        />
                     </div>
                     <ToDoList 
-                        todos={this.state.todoData}
+                        todos={visibleItems}
                         onDeleted={this.deleteItem}
+                        onToggleDone= {this.onToggleDone}
+                        onToggleImportant= {this.onToggleImportant}
                     />
                 </div>
             </div>
