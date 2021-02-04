@@ -4,14 +4,15 @@ import {AppHeader} from './components/app-header/app-header'
 import {SearchPanel} from './components/search-panel/search-panel'
 import {ToDoList} from './components/todo-list/todo-list'
 import {ItemStatusFilter} from './components/item-status-filter/item-status-filter'
+import { AddPanel } from './components/add-panel/add-panel'
  
 export class App extends Component {
 
     state = {
         todoData: [
-            {label: 'Drink Coffee', id: 1, important: false, done: false},
-            {label: 'Make Awesome App', id: 2, important: false, done: false},
-            {label: 'Have a lunch', id: 3, important: false, done: false},
+            {label: 'Drink Coffee', id: 0, important: false, done: false},
+            {label: 'Make Awesome App', id: 1, important: false, done: false},
+            {label: 'Have a lunch', id: 2, important: false, done: false},
         ],
         term: '',
         filter: 'all',
@@ -40,7 +41,6 @@ export class App extends Component {
             }
             return item
         })
-        console.log(todoDataUpdated)
         this.setState({
             todoData: todoDataUpdated
         })
@@ -54,6 +54,14 @@ export class App extends Component {
             return {
                 todoData: newArray
             }
+        })
+    }
+
+    addItem = (item) => {
+        this.setState(({todoData}) => {
+            const newArray = todoData
+            newArray.push(item)
+            return {todoData: newArray}
         })
     }
 
@@ -93,7 +101,9 @@ export class App extends Component {
                 <div className="mw-500">
                     <AppHeader />
                     <div className="top-panel d-flex">
-                        <SearchPanel onSearchChange={this.onSearchChange}/>
+                        <SearchPanel 
+                            onSearchChange={this.onSearchChange}
+                        />
                         <ItemStatusFilter 
                             filter={filter}
                             onFilterChange={this.onFilterChange}
@@ -104,6 +114,10 @@ export class App extends Component {
                         onDeleted={this.deleteItem}
                         onToggleDone= {this.onToggleDone}
                         onToggleImportant= {this.onToggleImportant}
+                    />
+                    <AddPanel
+                        count={todoData.length}
+                        onAdded={this.addItem}
                     />
                 </div>
             </div>

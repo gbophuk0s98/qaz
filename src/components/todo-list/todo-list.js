@@ -12,7 +12,6 @@ export const ToDoList = ({todos, onDeleted, onToggleDone, onToggleImportant}) =>
                 todos.map(item => {
 
                     const {id, ...itemProps} = item
-                    console.log(item)
                     
                     return(
                         <li key={id} className="list-group-item d-flex">
