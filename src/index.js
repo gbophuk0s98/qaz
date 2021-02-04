@@ -8,25 +8,40 @@ import { AddPanel } from './components/add-panel/add-panel'
  
 export class App extends Component {
 
-    state = {
-        todoData: [
-            {label: 'Drink Coffee', id: 0, important: false, done: false},
-            {label: 'Make Awesome App', id: 1, important: false, done: false},
-            {label: 'Have a lunch', id: 2, important: false, done: false},
-        ],
-        term: '',
-        filter: 'all',
+    constructor() {
+        super()
+        this.state = {
+            todoData: [
+                {label: 'Drink Coffee', id: 0, important: false, done: false},
+                {label: 'Make Awesome App', id: 1, important: false, done: false},
+                {label: 'Have a lunch', id: 2, important: false, done: false},
+            ],
+            term: '',
+            filter: 'all',
+        }
+        this.countToDo = this.state.todoData.length
+        this.countDone = 0
     }
 
     onToggleDone = (id) => {
 
         const todoDataUpdated = this.state.todoData.filter((item) => {
+            this.countDone = 0
             if (item.id === id) {
                 item.done = !item.done
                 return item
             }
             return item
         })
+
+        this.countToDo = this.state.todoData.length
+        todoDataUpdated.filter(item => {
+            if (item.done) {
+                this.countDone++
+                this.countToDo--
+            }
+        })
+
         this.setState({
             todoData: todoDataUpdated
         })
@@ -47,6 +62,9 @@ export class App extends Component {
     }
 
     deleteItem = (id) => {
+        if (this.state.todoData.length > 0){
+            this.countToDo--
+        }
         this.setState(({todoData}) => {
             const newArray = todoData
             newArray.splice(todoData.findIndex((el) => el.id === id), 1)
@@ -58,6 +76,7 @@ export class App extends Component {
     }
 
     addItem = (item) => {
+        this.countToDo++
         this.setState(({todoData}) => {
             const newArray = todoData
             newArray.push(item)
@@ -93,15 +112,17 @@ export class App extends Component {
 
     render(){
 
-        const { todoData, term, filter } = this.state
+        const { todoData, term, filter} = this.state
         const visibleItems = this.filter(this.search(todoData, term), filter)
 
         return(
             <div className="container m-auto">
                 <div className="mw-500">
-                    <AppHeader />
+                    <AppHeader 
+                        toDo={this.countToDo} 
+                        done={this.countDone}
+                    />
                     <div className="top-panel d-flex">
-                        dasdsa
                         <SearchPanel 
                             onSearchChange={this.onSearchChange}
                         />
