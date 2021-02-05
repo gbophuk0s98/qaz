@@ -23,6 +23,14 @@ export class App extends Component {
         this.countDone = 0
     }
 
+    changeToDoDataId(){
+        const newArray = this.state.todoData.map((item, index) => {
+            item.id = index
+            return item
+        })
+        this.setState({ todoData: newArray })
+    }
+
     getCountDone(){
         let count = 0
         this.state.todoData.forEach(item => {
@@ -44,7 +52,9 @@ export class App extends Component {
         let todoDataUpdated = this.getToDoData()
 
         todoDataUpdated = todoDataUpdated.filter(item => {
-            if (item.id === id) item.done = !item.done
+            if (item.id === id){
+                item.done = !item.done
+            }
             return true
         })
         
@@ -71,8 +81,6 @@ export class App extends Component {
     }
 
     deleteItem = (id) => {
-
-        console.log(this.countToDo)
         if (this.countToDo > 0 &&  this.countDone === 0){
             this.countToDo--
         }
@@ -80,6 +88,7 @@ export class App extends Component {
         if (this.countDone > 0) this.countDone--
 
         this.setState(({todoData}) => {
+
             const newArray = todoData
             newArray.splice(todoData.findIndex((el) => el.id === id), 1)
 
@@ -90,14 +99,20 @@ export class App extends Component {
     }
 
     addItem = (item) => {
-
         this.setState(({ todoData }) => {
-            let newArray = todoData
+
+            let newArray = todoData.map((item, index) => {
+                item.id = index
+                // console.log(`Items Array: {label: ${item.label}, id: ${item.id}}`)
+                return item
+            })
+
+            // console.log(`Item: {label: ${item.label}, id: ${item.id}}`)
             newArray.push(item)
             return { todoData: newArray }
         })
 
-        this.countToDo = this.getCountToDo() + 1
+        this.countToDo = this.getCountToDo() + 1 - this.getCountDone()
     }
 
     search(items, term){
@@ -130,7 +145,7 @@ export class App extends Component {
 
         const { todoData, term, filter} = this.state
         const visibleItems = this.filter(this.search(todoData, term), filter)
-
+        
         return(
             <div className="container m-auto">
                 <div className="mw-500">

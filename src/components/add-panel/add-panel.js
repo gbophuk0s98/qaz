@@ -6,13 +6,11 @@ export class AddPanel extends Component {
     state = {
         label: '',
         id: 0,
-        important: false,
-        done: false,
     }
 
     onChangeToDo = (event, count) => {
         const value = event.target.value
-        this.setState({ label: value, id: count })
+        this.setState({ label: value, id: count, important: false, done: false})
     }
 
     clearInput = () => {
