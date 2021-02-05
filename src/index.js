@@ -81,11 +81,11 @@ export class App extends Component {
     }
 
     deleteItem = (id) => {
-        if (this.countToDo > 0 &&  this.countDone === 0){
-            this.countToDo--
-        }
 
-        if (this.countDone > 0) this.countDone--
+        this.state.todoData.forEach(item => {
+            if (item.id === id && item.done) this.countDone--
+            else if(item.id === id && this.countToDo > 0) this.countToDo--
+        })
 
         this.setState(({todoData}) => {
 
