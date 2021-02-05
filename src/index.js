@@ -23,38 +23,47 @@ export class App extends Component {
         this.countDone = 0
     }
 
+    getCountDone(){
+        let count = 0
+        this.state.todoData.forEach(item => {
+            if (item.done) count++
+        })
+        return count
+    }
+
+    getCountToDo(){
+        return this.state.todoData.length
+    }
+
+    getToDoData(){
+        return this.state.todoData
+    }
+
     onToggleDone = (id) => {
 
-        const todoDataUpdated = this.state.todoData.filter((item) => {
-            this.countDone = 0
-            if (item.id === id) {
-                item.done = !item.done
-                return item
-            }
-            return item
+        let todoDataUpdated = this.getToDoData()
+
+        todoDataUpdated = todoDataUpdated.filter(item => {
+            if (item.id === id) item.done = !item.done
+            return true
+        })
+        
+        this.setState(({todoData}) => {
+            return {todoData: todoDataUpdated}
         })
 
-        this.countToDo = this.state.todoData.length
-        todoDataUpdated.filter(item => {
-            if (item.done) {
-                this.countDone++
-                this.countToDo--
-            }
-        })
+        this.countDone = this.getCountDone()
+        this.countToDo = this.getCountToDo() - this.countDone
 
-        this.setState({
-            todoData: todoDataUpdated
-        })
     }
 
     onToggleImportant = (id) => {
 
-        const todoDataUpdated = this.state.todoData.filter((item) => {
-            if (item.id === id) {
-                item.important = !item.important
-                return item
-            }
-            return item
+        let todoDataUpdated = this.getToDoData()
+
+        todoDataUpdated = todoDataUpdated.filter((item) => {
+            if (item.id === id) item.important = !item.important
+            return true
         })
         this.setState({
             todoData: todoDataUpdated
@@ -62,9 +71,14 @@ export class App extends Component {
     }
 
     deleteItem = (id) => {
-        if (this.state.todoData.length > 0){
+
+        console.log(this.countToDo)
+        if (this.countToDo > 0 &&  this.countDone === 0){
             this.countToDo--
         }
+
+        if (this.countDone > 0) this.countDone--
+
         this.setState(({todoData}) => {
             const newArray = todoData
             newArray.splice(todoData.findIndex((el) => el.id === id), 1)
@@ -76,12 +90,14 @@ export class App extends Component {
     }
 
     addItem = (item) => {
-        this.countToDo++
-        this.setState(({todoData}) => {
-            const newArray = todoData
+
+        this.setState(({ todoData }) => {
+            let newArray = todoData
             newArray.push(item)
-            return {todoData: newArray}
+            return { todoData: newArray }
         })
+
+        this.countToDo = this.getCountToDo() + 1
     }
 
     search(items, term){
